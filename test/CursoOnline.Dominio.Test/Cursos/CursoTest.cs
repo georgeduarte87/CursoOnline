@@ -1,6 +1,7 @@
 ﻿using System;
 using Xunit;
 using ExpectedObjects;
+using CursoOnline.Dominio.Test._Util;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
@@ -81,11 +82,16 @@ namespace CursoOnline.Dominio.Test.Cursos
                 Valor = (decimal)950
             };
 
+            /*
             var message = Assert.Throws<ArgumentException>(() =>
                 new Curso(nomeInvalido, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor))
                 .Message;
 
-            Assert.Equal("Nome Inválido.", message);
+            Assert.Equal("Nome Inválido.", message); */
+
+            Assert.Throws<ArgumentException>(() =>
+                new Curso(nomeInvalido, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor))
+                .ComMensagem("Nome Inválido.");
         }
 
         [Theory(DisplayName = "Não Aceitar Carga Horária Menor Que 1")]
@@ -101,11 +107,16 @@ namespace CursoOnline.Dominio.Test.Cursos
                 Valor = (decimal)950
             };
 
+            /*
             var message = Assert.Throws<ArgumentException>(() =>
                 new Curso(cursoEsperado.Nome, cargaHorariaInvalida, cursoEsperado.PublicoAlvo, cursoEsperado.Valor))
                 .Message;
 
-            Assert.Equal("Carga Horário Inválida.", message);
+            Assert.Equal("Carga Horário Inválida.", message);*/
+
+            Assert.Throws<ArgumentException>(() =>
+                new Curso(cursoEsperado.Nome, cargaHorariaInvalida, cursoEsperado.PublicoAlvo, cursoEsperado.Valor))
+                .ComMensagem("Carga Horário Inválida.");
         }
 
         [Theory(DisplayName = "Não Aceitar Valor Menor Que 1")]
@@ -121,11 +132,16 @@ namespace CursoOnline.Dominio.Test.Cursos
                 Valor = (decimal)950
             };
 
+            /*
             var message = Assert.Throws<ArgumentException>(() =>
                 new Curso(cursoEsperado.Nome, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, valorInvalido))
                 .Message;
 
-            Assert.Equal("Valor Inválido.", message);
+            Assert.Equal("Valor Inválido.", message);*/
+
+            Assert.Throws<ArgumentException>(() =>
+                new Curso(cursoEsperado.Nome, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, valorInvalido))
+                .ComMensagem("Valor Inválido.");
         }
     }
 
