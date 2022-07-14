@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
-    public class CursoTest
+    public class CursoTest : IDisposable
     {
         private readonly ITestOutputHelper _output;
         private readonly string _nome;
@@ -173,6 +173,11 @@ namespace CursoOnline.Dominio.Test.Cursos
             Assert.Throws<ArgumentException>(() =>
                 new Curso(_nome, _cargaHoraria, _publicoAlvo, valorInvalido))
                 .ComMensagem("Valor Inválido.");
+        }
+
+        public void Dispose()
+        {
+            _output.WriteLine("Dispose sendo executado");
         }
     }
 
