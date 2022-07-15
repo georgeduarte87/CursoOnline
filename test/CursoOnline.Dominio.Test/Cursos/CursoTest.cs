@@ -13,6 +13,7 @@ namespace CursoOnline.Dominio.Test.Cursos
         private readonly double _cargaHoraria;
         private readonly PublicoAlvo _publicoAlvo;
         private readonly decimal _valor;
+        private readonly string _descricao;
 
         public CursoTest(ITestOutputHelper output)
         {
@@ -22,6 +23,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             _cargaHoraria = 80;
             _publicoAlvo = PublicoAlvo.Estudante;
             _valor = 950.10m;
+            _descricao = "Uma descrição";
     }
 
         [Fact(DisplayName = "Deve Criar Curso")]
@@ -44,6 +46,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             var cursoEsperado = new
             {
                 Nome = _nome,
+                Descricao = _descricao,
                 CargaHoraria = _cargaHoraria,
                 PublicoAlvo = _publicoAlvo,
                 Valor = _valor
@@ -53,7 +56,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             // ACT
             //var curso = new Curso(nome, cargaHoraria, publicoAlvo, valor);
 
-            var curso = new Curso(cursoEsperado.Nome, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor);
+            var curso = new Curso(cursoEsperado.Nome, cursoEsperado.Descricao, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor);
 
             // Assert
             //Assert.Equal(nome, curso.Nome);
@@ -81,7 +84,7 @@ namespace CursoOnline.Dominio.Test.Cursos
                 new Curso(string.Empty, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor)); */
 
             Assert.Throws<ArgumentException>(() =>
-                new Curso(string.Empty, _cargaHoraria, _publicoAlvo, _valor));
+                new Curso(string.Empty, _descricao, _cargaHoraria, _publicoAlvo, _valor));
 
         }
 
@@ -97,7 +100,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             }; */
 
             Assert.Throws<ArgumentException>(() =>
-                new Curso(null, _cargaHoraria, _publicoAlvo, _valor));
+                new Curso(null, _descricao, _cargaHoraria, _publicoAlvo, _valor));
         }
 
         [Theory(DisplayName = "Não Aceitar Nomes Inválidos")]
@@ -121,7 +124,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             Assert.Equal("Nome Inválido.", message); */
 
             Assert.Throws<ArgumentException>(() =>
-                new Curso(nomeInvalido, _cargaHoraria, _publicoAlvo, _valor))
+                new Curso(nomeInvalido, _descricao, _cargaHoraria, _publicoAlvo, _valor))
                 .ComMensagem("Nome Inválido.");
         }
 
@@ -146,7 +149,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             Assert.Equal("Carga Horário Inválida.", message);*/
 
             Assert.Throws<ArgumentException>(() =>
-                new Curso(_nome, cargaHorariaInvalida, _publicoAlvo, _valor))
+                new Curso(_nome, _descricao, cargaHorariaInvalida, _publicoAlvo, _valor))
                 .ComMensagem("Carga Horário Inválida.");
         }
 
@@ -171,7 +174,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             Assert.Equal("Valor Inválido.", message);*/
 
             Assert.Throws<ArgumentException>(() =>
-                new Curso(_nome, _cargaHoraria, _publicoAlvo, valorInvalido))
+                new Curso(_nome, _descricao, _cargaHoraria, _publicoAlvo, valorInvalido))
                 .ComMensagem("Valor Inválido.");
         }
 
@@ -183,7 +186,7 @@ namespace CursoOnline.Dominio.Test.Cursos
 
     public class Curso
     {
-        public Curso(string nome, double cargaHoraria, PublicoAlvo publicoAlvo, decimal valor)
+        public Curso(string nome, string descricao, double cargaHoraria, PublicoAlvo publicoAlvo, decimal valor)
         {
             if (string.IsNullOrEmpty(nome))
                 throw new ArgumentException("Nome Inválido.");
@@ -195,15 +198,17 @@ namespace CursoOnline.Dominio.Test.Cursos
                 throw new ArgumentException("Valor Inválido.");
 
             Nome = nome;
+            Descricao = descricao;
             CargaHoraria = cargaHoraria;
             PublicoAlvo = publicoAlvo;
             Valor = valor;
         }
 
         public string Nome { get; private set; }
+        public string Descricao { get; private set; }
         public double CargaHoraria { get; private set; }
         public PublicoAlvo PublicoAlvo { get; private set; }
-        public decimal Valor { get; private set; }
+        public decimal Valor { get; private set; }     
     }
 
     public enum PublicoAlvo
