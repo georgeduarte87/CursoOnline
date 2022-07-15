@@ -3,6 +3,9 @@ using Xunit;
 using ExpectedObjects;
 using CursoOnline.Dominio.Test._Util;
 using Xunit.Abstractions;
+using CursoOnline.Dominio.Test._Builders;
+using Bogus;
+using CursoOnline.Dominio.Cursos;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
@@ -13,16 +16,24 @@ namespace CursoOnline.Dominio.Test.Cursos
         private readonly double _cargaHoraria;
         private readonly PublicoAlvo _publicoAlvo;
         private readonly decimal _valor;
+        private readonly string _descricao;
 
         public CursoTest(ITestOutputHelper output)
         {
             _output = output;
             _output.WriteLine("Construtor sendo executado");
-            _nome = "Informatica Básica";
-            _cargaHoraria = 80;
+            var faker = new Faker();
+
+            _nome = faker.Random.Words(3);
+            _cargaHoraria = faker.Random.Double(50,1000);
             _publicoAlvo = PublicoAlvo.Estudante;
-            _valor = 950.10m;
-    }
+            _valor = faker.Random.Decimal(100,1000);
+            _descricao = faker.Lorem.Paragraph();
+      
+            //_output.WriteLine($"Double: {faker.Random.Double(0,100)}");
+            //_output.WriteLine($"Company: {faker.Company.CompanyName()}");
+            //_output.WriteLine($"Email: {faker.Person.Email}");
+        }
 
         [Fact(DisplayName = "Deve Criar Curso")]
         public void DeveCriarCurso()
@@ -44,6 +55,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             var cursoEsperado = new
             {
                 Nome = _nome,
+                Descricao = _descricao,
                 CargaHoraria = _cargaHoraria,
                 PublicoAlvo = _publicoAlvo,
                 Valor = _valor
@@ -53,7 +65,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             // ACT
             //var curso = new Curso(nome, cargaHoraria, publicoAlvo, valor);
 
-            var curso = new Curso(cursoEsperado.Nome, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor);
+            var curso = new Curso(cursoEsperado.Nome, cursoEsperado.Descricao, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor);
 
             // Assert
             //Assert.Equal(nome, curso.Nome);
@@ -80,9 +92,12 @@ namespace CursoOnline.Dominio.Test.Cursos
             Assert.Throws<ArgumentException>(() =>
                 new Curso(string.Empty, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor)); */
 
+            /*
             Assert.Throws<ArgumentException>(() =>
-                new Curso(string.Empty, _cargaHoraria, _publicoAlvo, _valor));
+                new Curso(string.Empty, _descricao, _cargaHoraria, _publicoAlvo, _valor));*/
 
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComNome(string.Empty).Build());
         }
 
         [Fact(DisplayName = "Não Aceitar Nome Nulo")]
@@ -96,8 +111,12 @@ namespace CursoOnline.Dominio.Test.Cursos
                 Valor = (decimal)950
             }; */
 
+            /*
             Assert.Throws<ArgumentException>(() =>
-                new Curso(null, _cargaHoraria, _publicoAlvo, _valor));
+                new Curso(null, _descricao, _cargaHoraria, _publicoAlvo, _valor));*/
+
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComNome(null).Build());
         }
 
         [Theory(DisplayName = "Não Aceitar Nomes Inválidos")]
@@ -120,8 +139,13 @@ namespace CursoOnline.Dominio.Test.Cursos
 
             Assert.Equal("Nome Inválido.", message); */
 
+            /*
             Assert.Throws<ArgumentException>(() =>
-                new Curso(nomeInvalido, _cargaHoraria, _publicoAlvo, _valor))
+                new Curso(nomeInvalido, _descricao, _cargaHoraria, _publicoAlvo, _valor))
+                .ComMensagem("Nome Inválido."); */
+
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComNome(nomeInvalido).Build())
                 .ComMensagem("Nome Inválido.");
         }
 
@@ -145,8 +169,13 @@ namespace CursoOnline.Dominio.Test.Cursos
 
             Assert.Equal("Carga Horário Inválida.", message);*/
 
+            /*
             Assert.Throws<ArgumentException>(() =>
-                new Curso(_nome, cargaHorariaInvalida, _publicoAlvo, _valor))
+                new Curso(_nome, _descricao, cargaHorariaInvalida, _publicoAlvo, _valor))
+                .ComMensagem("Carga Horário Inválida."); */
+
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComCargaHoraria(cargaHorariaInvalida).Build())
                 .ComMensagem("Carga Horário Inválida.");
         }
 
@@ -170,8 +199,13 @@ namespace CursoOnline.Dominio.Test.Cursos
 
             Assert.Equal("Valor Inválido.", message);*/
 
+            /*
             Assert.Throws<ArgumentException>(() =>
-                new Curso(_nome, _cargaHoraria, _publicoAlvo, valorInvalido))
+                new Curso(_nome, _descricao, _cargaHoraria, _publicoAlvo, valorInvalido))
+                .ComMensagem("Valor Inválido."); */
+
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComValor(valorInvalido).Build())
                 .ComMensagem("Valor Inválido.");
         }
 
@@ -179,38 +213,5 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             _output.WriteLine("Dispose sendo executado");
         }
-    }
-
-    public class Curso
-    {
-        public Curso(string nome, double cargaHoraria, PublicoAlvo publicoAlvo, decimal valor)
-        {
-            if (string.IsNullOrEmpty(nome))
-                throw new ArgumentException("Nome Inválido.");
-
-            if (cargaHoraria < 1)
-                throw new ArgumentException("Carga Horário Inválida.");
-
-            if (valor < 1)
-                throw new ArgumentException("Valor Inválido.");
-
-            Nome = nome;
-            CargaHoraria = cargaHoraria;
-            PublicoAlvo = publicoAlvo;
-            Valor = valor;
-        }
-
-        public string Nome { get; private set; }
-        public double CargaHoraria { get; private set; }
-        public PublicoAlvo PublicoAlvo { get; private set; }
-        public decimal Valor { get; private set; }
-    }
-
-    public enum PublicoAlvo
-    {
-        Estudante,
-        Universitario,
-        Empregado,
-        Empreendedor
     }
 }
