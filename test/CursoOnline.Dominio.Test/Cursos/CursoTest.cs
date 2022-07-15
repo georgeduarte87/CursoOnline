@@ -5,6 +5,7 @@ using CursoOnline.Dominio.Test._Util;
 using Xunit.Abstractions;
 using CursoOnline.Dominio.Test._Builders;
 using Bogus;
+using CursoOnline.Dominio.Cursos;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
@@ -212,40 +213,5 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             _output.WriteLine("Dispose sendo executado");
         }
-    }
-
-    public class Curso
-    {
-        public Curso(string nome, string descricao, double cargaHoraria, PublicoAlvo publicoAlvo, decimal valor)
-        {
-            if (string.IsNullOrEmpty(nome))
-                throw new ArgumentException("Nome Inválido.");
-
-            if (cargaHoraria < 1)
-                throw new ArgumentException("Carga Horário Inválida.");
-
-            if (valor < 1)
-                throw new ArgumentException("Valor Inválido.");
-
-            Nome = nome;
-            Descricao = descricao;
-            CargaHoraria = cargaHoraria;
-            PublicoAlvo = publicoAlvo;
-            Valor = valor;
-        }
-
-        public string Nome { get; private set; }
-        public string Descricao { get; private set; }
-        public double CargaHoraria { get; private set; }
-        public PublicoAlvo PublicoAlvo { get; private set; }
-        public decimal Valor { get; private set; }     
-    }
-
-    public enum PublicoAlvo
-    {
-        Estudante,
-        Universitario,
-        Empregado,
-        Empreendedor
     }
 }
