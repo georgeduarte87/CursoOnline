@@ -3,6 +3,7 @@ using Xunit;
 using ExpectedObjects;
 using CursoOnline.Dominio.Test._Util;
 using Xunit.Abstractions;
+using CursoOnline.Dominio.Test._Builders;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
@@ -83,9 +84,12 @@ namespace CursoOnline.Dominio.Test.Cursos
             Assert.Throws<ArgumentException>(() =>
                 new Curso(string.Empty, cursoEsperado.CargaHoraria, cursoEsperado.PublicoAlvo, cursoEsperado.Valor)); */
 
+            /*
             Assert.Throws<ArgumentException>(() =>
-                new Curso(string.Empty, _descricao, _cargaHoraria, _publicoAlvo, _valor));
+                new Curso(string.Empty, _descricao, _cargaHoraria, _publicoAlvo, _valor));*/
 
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComNome(string.Empty).Build());
         }
 
         [Fact(DisplayName = "Não Aceitar Nome Nulo")]
@@ -99,8 +103,12 @@ namespace CursoOnline.Dominio.Test.Cursos
                 Valor = (decimal)950
             }; */
 
+            /*
             Assert.Throws<ArgumentException>(() =>
-                new Curso(null, _descricao, _cargaHoraria, _publicoAlvo, _valor));
+                new Curso(null, _descricao, _cargaHoraria, _publicoAlvo, _valor));*/
+
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComNome(null).Build());
         }
 
         [Theory(DisplayName = "Não Aceitar Nomes Inválidos")]
@@ -123,8 +131,13 @@ namespace CursoOnline.Dominio.Test.Cursos
 
             Assert.Equal("Nome Inválido.", message); */
 
+            /*
             Assert.Throws<ArgumentException>(() =>
                 new Curso(nomeInvalido, _descricao, _cargaHoraria, _publicoAlvo, _valor))
+                .ComMensagem("Nome Inválido."); */
+
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComNome(nomeInvalido).Build())
                 .ComMensagem("Nome Inválido.");
         }
 
@@ -148,8 +161,13 @@ namespace CursoOnline.Dominio.Test.Cursos
 
             Assert.Equal("Carga Horário Inválida.", message);*/
 
+            /*
             Assert.Throws<ArgumentException>(() =>
                 new Curso(_nome, _descricao, cargaHorariaInvalida, _publicoAlvo, _valor))
+                .ComMensagem("Carga Horário Inválida."); */
+
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComCargaHoraria(cargaHorariaInvalida).Build())
                 .ComMensagem("Carga Horário Inválida.");
         }
 
@@ -173,8 +191,13 @@ namespace CursoOnline.Dominio.Test.Cursos
 
             Assert.Equal("Valor Inválido.", message);*/
 
+            /*
             Assert.Throws<ArgumentException>(() =>
                 new Curso(_nome, _descricao, _cargaHoraria, _publicoAlvo, valorInvalido))
+                .ComMensagem("Valor Inválido."); */
+
+            Assert.Throws<ArgumentException>(() =>
+                CursoBuilder.Novo().ComValor(valorInvalido).Build())
                 .ComMensagem("Valor Inválido.");
         }
 
