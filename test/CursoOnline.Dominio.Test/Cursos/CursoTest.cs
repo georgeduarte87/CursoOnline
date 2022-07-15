@@ -4,6 +4,7 @@ using ExpectedObjects;
 using CursoOnline.Dominio.Test._Util;
 using Xunit.Abstractions;
 using CursoOnline.Dominio.Test._Builders;
+using Bogus;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
@@ -20,12 +21,18 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             _output = output;
             _output.WriteLine("Construtor sendo executado");
-            _nome = "Informatica Básica";
-            _cargaHoraria = 80;
+            var faker = new Faker();
+
+            _nome = faker.Random.Words(3);
+            _cargaHoraria = faker.Random.Double(50,1000);
             _publicoAlvo = PublicoAlvo.Estudante;
-            _valor = 950.10m;
-            _descricao = "Uma descrição";
-    }
+            _valor = faker.Random.Decimal(100,1000);
+            _descricao = faker.Lorem.Paragraph();
+      
+            //_output.WriteLine($"Double: {faker.Random.Double(0,100)}");
+            //_output.WriteLine($"Company: {faker.Company.CompanyName()}");
+            //_output.WriteLine($"Email: {faker.Person.Email}");
+        }
 
         [Fact(DisplayName = "Deve Criar Curso")]
         public void DeveCriarCurso()
