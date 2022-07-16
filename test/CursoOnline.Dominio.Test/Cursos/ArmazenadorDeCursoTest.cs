@@ -2,6 +2,8 @@
 using CursoOnline.Dominio.Cursos;
 using Moq;
 using Bogus;
+using System;
+using CursoOnline.Dominio.Test._Util;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
@@ -19,7 +21,7 @@ namespace CursoOnline.Dominio.Test.Cursos
                 Nome = faker.Random.Words(),
                 Descricao = faker.Lorem.Paragraph(),
                 CargaHoraria = faker.Random.Double(50,500),
-                PublicoAlvo = 1,
+                PublicoAlvo = "Estudante",
                 Valor = faker.Random.Decimal(100,1000)
             };
 
@@ -52,6 +54,16 @@ namespace CursoOnline.Dominio.Test.Cursos
                     )
                 ), Times.AtLeast(1)); // Valida se foi chamado pelo curso específico e a quantidade de vezes
         }
+
+        [Fact]
+        public void NaoDeveInformarPublicoAlvoInvalido()
+        {
+            var publicoAlvoInvalido = "Médico";
+            _cursoDto.PublicoAlvo = publicoAlvoInvalido;
+
+            Assert.Throws<ArgumentException>(() => _armazenadorDeCurso.Armazenar(_cursoDto))
+                .ComMensagem("Público Alvo Inválido");
+        }
     }
 
     public interface ICursoRepositorio
@@ -70,6 +82,11 @@ namespace CursoOnline.Dominio.Test.Cursos
 
         public void Armazenar(CursoDto cursoDto)
         {
+            Enum.TryParse(typeof(PublicoAlvo), cursoDto.PublicoAlvo, out var publicoAlvo);
+
+            if (publicoAlvo == null)
+                throw new ArgumentException("Público Alvo Inválido");
+
             var curso = new Curso(cursoDto.Nome, cursoDto.Descricao, cursoDto.CargaHoraria, PublicoAlvo.Estudante, cursoDto.Valor);
 
             _cursoRepositorio.Adicionar(curso);
@@ -81,7 +98,7 @@ namespace CursoOnline.Dominio.Test.Cursos
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public double CargaHoraria { get; set; }
-        public int PublicoAlvo { get; set; }
+        public string PublicoAlvo { get; set; }
         public decimal Valor { get; set; }
     }
 }
