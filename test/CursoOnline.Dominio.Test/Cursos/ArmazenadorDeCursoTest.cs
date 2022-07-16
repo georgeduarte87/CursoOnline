@@ -1,14 +1,35 @@
 ﻿using Xunit;
 using CursoOnline.Dominio.Cursos;
 using Moq;
+using Bogus;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
     public class ArmazenadorDeCursoTest
     {
+        private readonly CursoDto _cursoDto;
+        private readonly ArmazenadorDeCurso _armazenadorDeCurso;
+        private readonly Mock<ICursoRepositorio> _cursoRepositorioMock;
+
+        public ArmazenadorDeCursoTest()
+        {
+            var faker = new Faker();
+            _cursoDto = new CursoDto
+            {
+                Nome = faker.Random.Words(),
+                Descricao = faker.Lorem.Paragraph(),
+                CargaHoraria = faker.Random.Double(50,500),
+                PublicoAlvo = 1,
+                Valor = faker.Random.Decimal(100,1000)
+            };
+
+            _cursoRepositorioMock = new Mock<ICursoRepositorio>();
+            _armazenadorDeCurso = new ArmazenadorDeCurso(_cursoRepositorioMock.Object);
+        }
+
         [Fact]
         public void DeveAdicionarCurso()
-        {
+        {   /*
             var cursoDto = new CursoDto
             {
                 Nome = "Curso A",
@@ -16,15 +37,20 @@ namespace CursoOnline.Dominio.Test.Cursos
                 CargaHoraria = 80,
                 PublicoAlvo = 1,
                 Valor = 951.11m
-            };
+            }; */
 
-            var cursoRepositorioMock = new Mock<ICursoRepositorio>();
+            //var cursoRepositorioMock = new Mock<ICursoRepositorio>();
+            //var armazenadorDeCurso = new ArmazenadorDeCurso(cursoRepositorioMock.Object);
 
-            var armazenadoreDeCurso = new ArmazenadoreDeCurso(cursoRepositorioMock.Object);
+            _armazenadorDeCurso.Armazenar(_cursoDto);
 
-            armazenadoreDeCurso.Armazenar(cursoDto);
-
-            cursoRepositorioMock.Verify(r => r.Adicionar(It.IsAny<Curso>()));
+            _cursoRepositorioMock.Verify(r => r.Adicionar(It.IsAny<Curso>())); // Valida apenas se foi chamado
+            _cursoRepositorioMock.Verify(r => r.Adicionar(
+                It.Is<Curso>(
+                    c => c.Nome == _cursoDto.Nome &&
+                    c.Descricao == _cursoDto.Descricao
+                    )
+                ), Times.AtLeast(1)); // Valida se foi chamado pelo curso específico e a quantidade de vezes
         }
     }
 
@@ -33,11 +59,11 @@ namespace CursoOnline.Dominio.Test.Cursos
         void Adicionar(Curso curso);
     }
 
-    public class ArmazenadoreDeCurso
+    public class ArmazenadorDeCurso
     {
         private readonly ICursoRepositorio _cursoRepositorio;
 
-        public ArmazenadoreDeCurso(ICursoRepositorio cursoRepositorio)
+        public ArmazenadorDeCurso(ICursoRepositorio cursoRepositorio)
         {
             _cursoRepositorio = cursoRepositorio;
         }
