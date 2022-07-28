@@ -2,3 +2,5 @@
 
 
 Projeto do curso [TDD com xUnit para C# .NET Core](https://www.udemy.com/course/automatizando-testes-para-sua-aplicacao).
+
+Abandonado, por confusão no curso.
